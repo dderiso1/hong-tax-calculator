@@ -40,15 +40,31 @@
   --text-100: clamp(3.4rem, 11vw, 8rem);
 }
 
-html {
-  background: var(--color-hong-paper);
-  color: var(--color-hong-ink);
+/* Defensive: nothing in this calculator should ever force a min-content
+   width that breaks out of the viewport. Tables especially. */
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
 }
 
-main, header, footer {
-  max-width: 100vw;
-  overflow-x: clip;
+html {
+  background: var(--color-hong-paper);
+  color: var(--color-hong-ink);
+}
+
+main,
+header,
+footer,
+section {
+  max-width: 100%;
 }
 
 body {
@@ -56,7 +72,6 @@ body {
   font-feature-settings: "ss01", "cv01";
   background: var(--color-hong-paper);
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 body::before {
@@ -174,7 +189,8 @@ body::before {
   line-height: 0.85;
 }
 
-/* === COMPONENTS === */
+/* === COMPONENTS — wrapped in @layer so Tailwind utilities (.hidden, etc) win === */
+@layer components {
 .eyebrow {
   font-family: var(--font-body);
   font-weight: 700;
@@ -186,16 +202,25 @@ body::before {
 .pill {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   font-size: 13px;
-  padding: 0.65rem 1rem;
+  padding: 0.65rem 0.5rem;
   border: 2px solid var(--color-hong-navy);
   background: transparent;
   color: var(--color-hong-navy);
   cursor: pointer;
   text-align: center;
   transition: all 0.12s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 640px) {
+  .pill {
+    padding: 0.65rem 1rem;
+    letter-spacing: 0.06em;
+  }
 }
 .pill:hover {
   background: rgba(30, 41, 87, 0.08);
@@ -308,6 +333,7 @@ body::before {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+} /* end @layer components */
 
 @media (prefers-reduced-motion: reduce) {
   .tick, .btn-primary, .pill {

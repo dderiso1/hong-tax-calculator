@@ -30,3 +30,8 @@ export function parseIncomeInput(raw: string): number {
   const n = Number(cleaned);
   return Number.isFinite(n) && n > 0 ? n : 0;
 }
+
+// Cubic ease-out for number ticks
+export function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}

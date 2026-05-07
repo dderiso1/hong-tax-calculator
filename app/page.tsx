@@ -27,12 +27,12 @@ function SiteHeader() {
             Hong for Wisconsin
           </span>
         </a>
-        <nav className="hidden sm:flex items-center gap-3">
+        <nav className="flex items-center gap-2 sm:gap-3">
           <a
             href="https://docs.legis.wisconsin.gov/2025/related/proposals/ab1209"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary"
+            className="btn-secondary hidden sm:inline-flex"
           >
             Read AB&nbsp;1209
           </a>
@@ -40,7 +40,7 @@ function SiteHeader() {
             href="https://secure.actblue.com/donate/website_fh?refcode=taxcalc"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary"
+            className="btn-primary !py-2.5 !px-4 sm:!py-3.5 sm:!px-6"
           >
             Chip in
           </a>

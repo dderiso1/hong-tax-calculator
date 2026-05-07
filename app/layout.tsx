@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Open_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,13 @@ const body = Open_Sans({
   weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#1e2957",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hong-tax-calculator.vercel.app"),

@@ -1,19 +1,31 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   type FilingStatus,
   bracketsFor,
   compareRegimes,
 } from "@/lib/bill";
-import { FILING_STATUS_LABELS, verdict } from "@/lib/copy";
-import { formatPercent, formatUSD, parseIncomeInput } from "@/lib/format";
+import {
+  FILING_STATUS_LABELS,
+  FILING_STATUS_LABELS_SHORT,
+  INCOME_PRESETS,
+  SHARE_TEMPLATE,
+  verdict,
+} from "@/lib/copy";
+import {
+  easeOutCubic,
+  formatPercent,
+  formatUSD,
+  parseIncomeInput,
+} from "@/lib/format";
 
 type Props = {
   defaultIncome?: number;
 };
 
 const VALID_STATUSES: FilingStatus[] = ["single", "mfj", "mfs"];
+const STORAGE_KEY = "hong-calc:v1";
 
 export function Calculator({ defaultIncome = 75_000 }: Props) {
   const [income, setIncome] = useState<number>(defaultIncome);
@@ -21,19 +33,57 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
     new Intl.NumberFormat("en-US").format(defaultIncome),
   );
   const [status, setStatus] = useState<FilingStatus>("single");
+  const [toast, setToast] = useState<string | null>(null);
 
+  // URL params win; localStorage is a fallback for return visitors
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    let nextIncome: number | null = null;
+    let nextStatus: FilingStatus | null = null;
     const i = parseIncomeInput(params.get("income") ?? "");
-    if (i > 0) {
-      setIncome(i);
-      setRaw(new Intl.NumberFormat("en-US").format(i));
-    }
+    if (i > 0) nextIncome = i;
     const s = params.get("status");
     if (s && (VALID_STATUSES as string[]).includes(s)) {
-      setStatus(s as FilingStatus);
+      nextStatus = s as FilingStatus;
     }
+    if (nextIncome === null || nextStatus === null) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+        if (saved && typeof saved === "object") {
+          if (
+            nextIncome === null &&
+            typeof saved.income === "number" &&
+            saved.income > 0
+          ) {
+            nextIncome = saved.income;
+          }
+          if (
+            nextStatus === null &&
+            typeof saved.status === "string" &&
+            (VALID_STATUSES as string[]).includes(saved.status)
+          ) {
+            nextStatus = saved.status as FilingStatus;
+          }
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    if (nextIncome !== null) {
+      setIncome(nextIncome);
+      setRaw(new Intl.NumberFormat("en-US").format(nextIncome));
+    }
+    if (nextStatus !== null) setStatus(nextStatus);
   }, []);
+
+  // Persist on change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ income, status }));
+    } catch {
+      /* ignore */
+    }
+  }, [income, status]);
 
   const result = useMemo(
     () => compareRegimes(income, status, 2026),
@@ -44,26 +94,64 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
   const currentBrackets = bracketsFor(status, 2026, "current");
   const proposedBrackets = bracketsFor(status, 2026, "ab1209");
 
+  // Apply a preset
+  function applyPreset(amount: number) {
+    setIncome(amount);
+    setRaw(new Intl.NumberFormat("en-US").format(amount));
+  }
+
+  // Share / copy current state
+  async function share() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("income", String(income));
+    url.searchParams.set("status", status);
+    const text = SHARE_TEMPLATE(income, result.delta);
+    const shareData = {
+      title: "Tax the Rich — Hong for Wisconsin",
+      text,
+      url: url.toString(),
+    };
+    if (typeof navigator !== "undefined" && "share" in navigator) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        /* fall through to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${text} ${url.toString()}`);
+      setToast("Link copied — text it to anyone who asks.");
+      setTimeout(() => setToast(null), 2400);
+    } catch {
+      setToast("Couldn't copy — long-press the URL bar.");
+      setTimeout(() => setToast(null), 2400);
+    }
+  }
+
   return (
     <section id="calculator" className="relative z-10">
       {/* HERO */}
       <div className="relative bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)]">
         <div className="stripe-tape" aria-hidden />
-        <div className="relative z-10 max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 pt-16 pb-28 lg:pt-24 lg:pb-36">
-          <p className="eyebrow text-[var(--color-hong-yellow)] mb-6">
+        <div className="relative z-10 max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 pt-14 pb-24 sm:pt-20 sm:pb-32 lg:pt-24 lg:pb-36">
+          <p className="eyebrow text-[var(--color-hong-yellow)] mb-5 sm:mb-6">
             ★ The Tax-the-Rich Calculator ★
           </p>
-          <h1 className="poster-mega text-[clamp(3.4rem,12vw,8.5rem)] text-[var(--color-hong-yellow)] uppercase">
+          <h1 className="poster-mega text-[clamp(3rem,12vw,8.5rem)] text-[var(--color-hong-yellow)] uppercase">
             Tax the
             <br />
             <span className="text-[var(--color-hong-cream)]">rich.</span>
           </h1>
-          <p className="type-h3 mt-8 max-w-3xl text-[color:rgba(250,246,232,0.92)]">
+          <p className="mt-6 sm:mt-8 max-w-3xl text-[19px] sm:text-[24px] lg:text-[33px] leading-snug font-display font-medium text-[color:rgba(250,246,232,0.92)]">
             It&rsquo;s about damn time the wealthiest Wisconsinites paid their
             share. Type your income — see exactly what Hong&rsquo;s plan does
-            for <em className="not-italic hl-yellow text-[var(--color-hong-navy)]">you.</em>
+            for{" "}
+            <em className="not-italic hl-yellow text-[var(--color-hong-navy)]">
+              you.
+            </em>
           </p>
-          <p className="type-subheading mt-5 max-w-2xl text-[color:rgba(250,246,232,0.7)]">
+          <p className="mt-4 sm:mt-5 max-w-2xl text-[15px] sm:text-[18px] leading-snug text-[color:rgba(250,246,232,0.7)]">
             For 99 out of 100 of us, the answer is{" "}
             <strong className="text-[var(--color-hong-yellow)]">$0</strong>.
             Every new dollar comes from the people at the top — and goes
@@ -111,7 +199,8 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                 />
               </div>
 
-              <div className="mt-6 grid grid-cols-3 gap-2">
+              {/* Filing status pills */}
+              <div className="mt-5 grid grid-cols-3 gap-2">
                 {(Object.keys(FILING_STATUS_LABELS) as FilingStatus[]).map(
                   (s) => (
                     <button
@@ -121,13 +210,41 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                       aria-pressed={status === s}
                       onClick={() => setStatus(s)}
                     >
-                      {FILING_STATUS_LABELS[s]}
+                      <span className="sm:hidden">
+                        {FILING_STATUS_LABELS_SHORT[s]}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {FILING_STATUS_LABELS[s]}
+                      </span>
                     </button>
                   ),
                 )}
               </div>
 
-              <details className="mt-8 type-small-body text-[var(--color-hong-slate)]">
+              {/* Income presets */}
+              <div className="mt-6">
+                <p className="eyebrow text-[10px] text-[var(--color-hong-slate)] mb-2">
+                  Or try someone&rsquo;s income
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {INCOME_PRESETS.map((p) => (
+                    <button
+                      key={p.income}
+                      type="button"
+                      onClick={() => applyPreset(p.income)}
+                      className={`pill !py-2 !px-3 !text-[11px] ${
+                        income === p.income ? "" : ""
+                      }`}
+                      aria-pressed={income === p.income}
+                    >
+                      <span className="sm:hidden">{p.short}</span>
+                      <span className="hidden sm:inline">{p.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <details className="mt-7 type-small-body text-[var(--color-hong-slate)]">
                 <summary className="cursor-pointer eyebrow text-[var(--color-hong-navy)]">
                   What counts as &ldquo;taxable income&rdquo;?
                 </summary>
@@ -141,19 +258,19 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
             </div>
 
             {/* RIGHT: RESULT */}
-            <div className="relative min-w-0">
+            <div
+              className="relative min-w-0"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               <p className="eyebrow text-[var(--color-hong-navy)] mb-3">
                 What changes for you
               </p>
-              <p
-                className={`poster-mega tabular tick text-[clamp(3.5rem,11vw,6.5rem)] ${
-                  v.tone === "calm"
-                    ? "text-[var(--color-hong-navy)]"
-                    : "text-[var(--color-hong-navy)]"
-                }`}
-              >
-                {v.big}
-              </p>
+              <AnimatedNumber
+                value={result.delta}
+                unchanged={result.unchanged}
+                className="poster-mega tabular tick text-[clamp(3.5rem,11vw,6.5rem)] text-[var(--color-hong-navy)]"
+              />
               <p className="mt-3 max-w-md type-body-16 text-[var(--color-hong-ink)]">
                 {v.small}
               </p>
@@ -178,6 +295,22 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                   </dd>
                 </div>
               </dl>
+
+              <button
+                type="button"
+                onClick={share}
+                className="btn-primary mt-7 w-full justify-center"
+              >
+                ↗ Share my number
+              </button>
+              {toast && (
+                <p
+                  role="status"
+                  className="mt-3 text-center type-small-body text-[var(--color-hong-navy)]"
+                >
+                  {toast}
+                </p>
+              )}
             </div>
           </div>
 
@@ -193,24 +326,198 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
               starts to pay closer to a fair share.
             </p>
 
-            <div className="grid sm:grid-cols-2 gap-6 sm:gap-10 min-w-0">
+            {/* Mobile: combined 3-column table */}
+            <div className="sm:hidden">
+              <CombinedBracketTable
+                current={currentBrackets}
+                proposed={proposedBrackets}
+                income={income}
+              />
+            </div>
+
+            {/* Tablet+: two side-by-side tables */}
+            <div className="hidden sm:grid sm:grid-cols-2 gap-10 min-w-0">
               <BracketBlock
                 title="Current law"
                 rows={currentBrackets}
                 income={income}
-                accent="navy"
               />
               <BracketBlock
                 title="AB 1209 — Hong's plan"
                 rows={proposedBrackets}
                 income={income}
-                accent="yellow"
+                accent
               />
             </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+/* ---------- helpers ---------- */
+
+function AnimatedNumber({
+  value,
+  unchanged,
+  className,
+}: {
+  value: number;
+  unchanged: boolean;
+  className?: string;
+}) {
+  const [display, setDisplay] = useState<number>(value);
+  const displayRef = useRef<number>(value);
+  const startVal = useRef<number>(value);
+  const startTime = useRef<number | null>(null);
+  const raf = useRef<number | null>(null);
+  const mounted = useRef<boolean>(false);
+
+  // keep ref in sync so the next animation reads the current shown value
+  useEffect(() => {
+    displayRef.current = display;
+  }, [display]);
+
+  useEffect(() => {
+    // First render after props settle: snap to value, no animation.
+    if (!mounted.current) {
+      mounted.current = true;
+      displayRef.current = value;
+      setDisplay(value);
+      return;
+    }
+    if (raf.current !== null) cancelAnimationFrame(raf.current);
+    startVal.current = displayRef.current;
+    startTime.current = null;
+    const target = value;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setDisplay(target);
+      displayRef.current = target;
+      return;
+    }
+    const duration = 320;
+    const tick = (t: number) => {
+      if (startTime.current === null) startTime.current = t;
+      const elapsed = t - startTime.current;
+      const p = Math.min(1, elapsed / duration);
+      const eased = easeOutCubic(p);
+      const next = startVal.current + (target - startVal.current) * eased;
+      setDisplay(next);
+      displayRef.current = next;
+      if (p < 1) {
+        raf.current = requestAnimationFrame(tick);
+      }
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => {
+      if (raf.current !== null) cancelAnimationFrame(raf.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  if (unchanged) {
+    return <p className={className}>$0</p>;
+  }
+  const rounded = Math.round(display);
+  const sign = rounded > 0 ? "+" : "";
+  return (
+    <p className={className}>
+      {sign}
+      {formatUSD(rounded)}
+    </p>
+  );
+}
+
+function CombinedBracketTable({
+  current,
+  proposed,
+  income,
+}: {
+  current: readonly { from: number; rate: number }[];
+  proposed: readonly { from: number; rate: number }[];
+  income: number;
+}) {
+  // Build a unified row set keyed on threshold.
+  const thresholds = Array.from(
+    new Set([...current.map((b) => b.from), ...proposed.map((b) => b.from)]),
+  ).sort((a, b) => a - b);
+
+  function rateAt(rows: readonly { from: number; rate: number }[], v: number) {
+    let r: number | null = null;
+    for (const row of rows) {
+      if (v >= row.from) r = row.rate;
+    }
+    return r;
+  }
+
+  return (
+    <table className="w-full type-small-body tabular table-fixed">
+      <thead>
+        <tr className="border-b border-[var(--color-hong-navy)]/20">
+          <th className="text-left eyebrow text-[10px] py-2 w-[44%]">
+            Income above
+          </th>
+          <th className="text-right eyebrow text-[10px] py-2 w-[28%]">Now</th>
+          <th className="text-right eyebrow text-[10px] py-2 w-[28%]">
+            AB 1209
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {thresholds.map((from, i) => {
+          const next = thresholds[i + 1] ?? Infinity;
+          const inThis = income > from && income <= next;
+          const cur = rateAt(current, from);
+          const prop = rateAt(proposed, from);
+          const changed = cur !== null && prop !== null && cur !== prop;
+          return (
+            <tr
+              key={from}
+              className="border-b border-[var(--color-hong-navy)]/10"
+              style={
+                inThis
+                  ? { background: "var(--color-hong-yellow)" }
+                  : undefined
+              }
+            >
+              <td className="py-2.5 text-[13px]">
+                {from === 0 ? "$0" : formatUSD(from)}
+                {inThis && (
+                  <span
+                    className="ml-2 text-[9px] px-1.5 py-0.5 align-middle font-bold"
+                    style={{
+                      background: "var(--color-hong-navy)",
+                      color: "var(--color-hong-yellow)",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
+                    YOU
+                  </span>
+                )}
+              </td>
+              <td className="py-2.5 text-right poster text-[15px] text-[var(--color-hong-slate)]">
+                {cur !== null ? formatPercent(cur) : "—"}
+              </td>
+              <td
+                className="py-2.5 text-right poster text-[15px]"
+                style={{
+                  color: changed
+                    ? "var(--color-hong-navy)"
+                    : "var(--color-hong-slate)",
+                  fontWeight: changed ? 800 : 600,
+                }}
+              >
+                {prop !== null ? formatPercent(prop) : "—"}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
   );
 }
 
@@ -223,29 +530,29 @@ function BracketBlock({
   title: string;
   rows: readonly { from: number; rate: number }[];
   income: number;
-  accent: "navy" | "yellow";
+  accent?: boolean;
 }) {
-  const accentColor =
-    accent === "yellow" ? "var(--color-hong-navy)" : "var(--color-hong-navy)";
-  const highlightBg =
-    accent === "yellow"
-      ? "var(--color-hong-yellow)"
-      : "rgba(30, 41, 87, 0.08)";
+  const accentColor = "var(--color-hong-navy)";
+  const highlightBg = accent
+    ? "var(--color-hong-yellow)"
+    : "rgba(30, 41, 87, 0.08)";
   return (
-    <div>
+    <div className="min-w-0">
       <h3
         className="eyebrow mb-3 pb-2 border-b-2"
         style={{ color: accentColor, borderColor: accentColor }}
       >
         {title}
       </h3>
-      <table className="w-full type-small-body tabular">
+      <table className="w-full type-small-body tabular table-fixed">
         <thead>
           <tr className="border-b border-[var(--color-hong-navy)]/20">
-            <th className="text-left eyebrow text-[10px] py-2">
+            <th className="text-left eyebrow text-[10px] py-2 w-[65%]">
               Income above
             </th>
-            <th className="text-right eyebrow text-[10px] py-2">Rate</th>
+            <th className="text-right eyebrow text-[10px] py-2 w-[35%]">
+              Rate
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -256,18 +563,10 @@ function BracketBlock({
               <tr
                 key={`${b.from}-${b.rate}`}
                 className="border-b border-[var(--color-hong-navy)]/10"
-                style={
-                  inThisBracket
-                    ? { background: highlightBg }
-                    : undefined
-                }
+                style={inThisBracket ? { background: highlightBg } : undefined}
               >
                 <td className="py-2.5">
-                  {b.from === 0 ? (
-                    <span>$0</span>
-                  ) : (
-                    <span>{formatUSD(b.from)}</span>
-                  )}
+                  {b.from === 0 ? "$0" : formatUSD(b.from)}
                   {inThisBracket && (
                     <span
                       className="ml-2 text-[10px] px-1.5 py-0.5 align-middle font-bold"
