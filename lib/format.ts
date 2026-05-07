@@ -20,6 +20,12 @@ export function formatUSD(amount: number, withCents = false): string {
   return (withCents ? usdCentsFmt : usdFmt).format(amount);
 }
 
+// "$0 – $14,680" or "$750,000+" for the top bracket.
+export function formatBracketRange(from: number, to: number): string {
+  if (!Number.isFinite(to)) return `${formatUSD(from)}+`;
+  return `${formatUSD(from)} \u2013 ${formatUSD(to)}`;
+}
+
 export function formatPercent(rate: number): string {
   return pctFmt.format(rate);
 }

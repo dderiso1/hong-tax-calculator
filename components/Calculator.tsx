@@ -15,6 +15,7 @@ import {
 } from "@/lib/copy";
 import {
   easeOutCubic,
+  formatBracketRange,
   formatPercent,
   formatUSD,
   parseIncomeInput,
@@ -486,11 +487,11 @@ function CombinedBracketTable({
     <table className="w-full type-small-body tabular table-fixed">
       <thead>
         <tr className="border-b border-[var(--color-hong-navy)]/20">
-          <th className="text-left eyebrow text-[10px] py-2 w-[44%]">
-            Income above
+          <th className="text-left eyebrow text-[10px] py-2 w-[48%]">
+            Income range
           </th>
-          <th className="text-right eyebrow text-[10px] py-2 w-[28%]">Now</th>
-          <th className="text-right eyebrow text-[10px] py-2 w-[28%]">
+          <th className="text-right eyebrow text-[10px] py-2 w-[26%]">Now</th>
+          <th className="text-right eyebrow text-[10px] py-2 w-[26%]">
             AB 1209
           </th>
         </tr>
@@ -512,11 +513,11 @@ function CombinedBracketTable({
                   : undefined
               }
             >
-              <td className="py-2.5 text-[13px]">
-                {from === 0 ? "$0" : formatUSD(from)}
+              <td className="py-2.5 text-[12px] leading-tight">
+                {formatBracketRange(from, next)}
                 {inThis && (
                   <span
-                    className="ml-2 text-[9px] px-1.5 py-0.5 align-middle font-bold"
+                    className="ml-2 text-[9px] px-1.5 py-0.5 align-middle font-bold inline-block"
                     style={{
                       background: "var(--color-hong-navy)",
                       color: "var(--color-hong-yellow)",
@@ -575,10 +576,10 @@ function BracketBlock({
       <table className="w-full type-small-body tabular table-fixed">
         <thead>
           <tr className="border-b border-[var(--color-hong-navy)]/20">
-            <th className="text-left eyebrow text-[10px] py-2 w-[65%]">
-              Income above
+            <th className="text-left eyebrow text-[10px] py-2 w-[70%]">
+              Income range
             </th>
-            <th className="text-right eyebrow text-[10px] py-2 w-[35%]">
+            <th className="text-right eyebrow text-[10px] py-2 w-[30%]">
               Rate
             </th>
           </tr>
@@ -594,10 +595,10 @@ function BracketBlock({
                 style={inThisBracket ? { background: highlightBg } : undefined}
               >
                 <td className="py-2.5">
-                  {b.from === 0 ? "$0" : formatUSD(b.from)}
+                  {formatBracketRange(b.from, next)}
                   {inThisBracket && (
                     <span
-                      className="ml-2 text-[10px] px-1.5 py-0.5 align-middle font-bold"
+                      className="ml-2 text-[10px] px-1.5 py-0.5 align-middle font-bold inline-block"
                       style={{
                         background: "var(--color-hong-navy)",
                         color: "var(--color-hong-yellow)",
