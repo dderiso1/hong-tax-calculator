@@ -301,15 +301,12 @@ body::before {
   width: 100%;
 }
 
-/* Highlighted strikethrough for "the wealthy" framing */
+/* Marker highlight on key words */
 .hl-yellow {
-  background: linear-gradient(
-    transparent 60%,
-    var(--color-hong-yellow) 60%,
-    var(--color-hong-yellow) 92%,
-    transparent 92%
-  );
-  padding: 0 0.05em;
+  background: var(--color-hong-yellow);
+  padding: 0.05em 0.15em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 @media (prefers-reduced-motion: reduce) {
