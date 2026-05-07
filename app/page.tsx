@@ -7,8 +7,9 @@ export default function Home() {
       <SiteHeader />
       <main>
         <Calculator />
+        <UnequalSection />
         <RevenueSection />
-        <QuoteSection />
+        <FrancescaSection />
         <CtaSection />
       </main>
       <SiteFooter />
@@ -19,14 +20,14 @@ export default function Home() {
 function SiteHeader() {
   return (
     <header className="relative z-30 bg-[var(--color-hong-paper)] border-b-2 border-[var(--color-hong-navy)]">
-      <div className="max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-3">
           <HongMark className="w-9 h-9" />
-          <span className="display tracking-[0.18em] text-sm text-[var(--color-hong-navy)]">
+          <span className="poster text-[15px] tracking-[0.18em] uppercase text-[var(--color-hong-navy)]">
             Hong for Wisconsin
           </span>
         </a>
-        <nav className="hidden sm:flex items-center gap-1">
+        <nav className="hidden sm:flex items-center gap-3">
           <a
             href="https://docs.legis.wisconsin.gov/2025/related/proposals/ab1209"
             target="_blank"
@@ -39,9 +40,9 @@ function SiteHeader() {
             href="https://secure.actblue.com/donate/website_fh?refcode=taxcalc"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary ml-3"
+            className="btn-primary"
           >
-            Donate
+            Chip in
           </a>
         </nav>
       </div>
@@ -49,34 +50,99 @@ function SiteHeader() {
   );
 }
 
+function UnequalSection() {
+  return (
+    <section className="relative z-10 mt-24 lg:mt-36">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16">
+        <p className="eyebrow text-[var(--color-hong-navy)] mb-4">
+          ★ The system is rigged ★
+        </p>
+        <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] text-[var(--color-hong-navy)] uppercase max-w-5xl">
+          Working people pay
+          <br />
+          their fair share.{" "}
+          <span className="hl-yellow">The wealthy don&rsquo;t.</span>
+        </h2>
+        <p className="type-body mt-8 max-w-3xl text-[var(--color-hong-ink)]">
+          Right now in Wisconsin, a teacher pulling double shifts pays a higher
+          effective rate than a millionaire collecting capital gains. A nurse
+          pays referendum after referendum to keep her kids&rsquo; school open
+          while billion-dollar corporations get tax breaks. Our state cuts
+          subsidy checks to the wealthiest few while working families do the
+          actual work of building Wisconsin.
+        </p>
+        <p className="type-body mt-5 max-w-3xl text-[var(--color-hong-ink)]">
+          <strong className="text-[var(--color-hong-navy)]">
+            Francesca&rsquo;s plan ends that.
+          </strong>{" "}
+          A single new top tax bracket on income above $1 million. A modest bump
+          on income above $323k. <strong>That&rsquo;s it.</strong> Brackets 1, 2,
+          and 3 — where almost every Wisconsinite lives — don&rsquo;t move a
+          basis point.
+        </p>
+
+        <div className="mt-14 grid sm:grid-cols-3 gap-4 sm:gap-6">
+          <Stat big="99%" label="of Wisconsinites pay $0 more" />
+          <Stat big="$1M+" label="where the new top rate kicks in" featured />
+          <Stat big="100%" label="of revenue routed to schools" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Stat({
+  big,
+  label,
+  featured,
+}: {
+  big: string;
+  label: string;
+  featured?: boolean;
+}) {
+  return (
+    <div
+      className={`p-7 ${
+        featured
+          ? "bg-[var(--color-hong-yellow)] text-[var(--color-hong-navy)]"
+          : "bg-[var(--color-hong-navy)] text-[var(--color-hong-yellow)]"
+      }`}
+    >
+      <div className="poster-mega tabular text-[clamp(3.2rem,7vw,5rem)]">
+        {big}
+      </div>
+      <p
+        className={`eyebrow mt-2 ${
+          featured
+            ? "text-[var(--color-hong-navy)]"
+            : "text-[var(--color-hong-yellow)]"
+        }`}
+      >
+        {label}
+      </p>
+    </div>
+  );
+}
+
 function RevenueSection() {
   return (
     <section className="relative z-10 mt-24 lg:mt-36">
-      <div className="max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="max-w-3xl">
-          <p className="display text-xs tracking-[0.25em] text-[var(--color-hong-red)] mb-3">
-            Where the money goes
-          </p>
-          <h2 className="display-xl text-[clamp(2.2rem,5.5vw,4.2rem)] text-[var(--color-hong-navy)]">
-            Every new dollar
-            <br />
-            funds your kids&rsquo; school
-            <br />
-            and cuts your property tax.
-          </h2>
-          <p className="mt-6 text-lg text-[var(--color-hong-ink)] leading-relaxed max-w-2xl">
-            AB&nbsp;1209 routes 100% of the new revenue into a dedicated{" "}
-            <strong>school aid fund</strong>. It pays for what Wisconsin&rsquo;s
-            broken funding formula has been pushing onto your property tax bill
-            for two decades.
-          </p>
-        </div>
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16">
+        <p className="eyebrow text-[var(--color-hong-navy)] mb-4">
+          ★ Where every new dollar goes ★
+        </p>
+        <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] text-[var(--color-hong-navy)] uppercase max-w-5xl">
+          Money the wealthy
+          <br />
+          were keeping.{" "}
+          <span className="hl-yellow">Now it goes to your kid&rsquo;s school.</span>
+        </h2>
 
         <div className="mt-14 grid md:grid-cols-3 gap-8">
           <RevenueCard
             stat="90%"
             statLabel="Special-ed reimbursement"
-            note="Up from 42% today. Districts stop having to choose between special education and everything else."
+            note="Up from 42%. Districts stop having to choose between special education and everything else. Money the state was leaving to your property tax bill."
             cite={{
               label: "AB 1209, sec. 26",
               href: "https://docs.legis.wisconsin.gov/2025/related/proposals/ab1209",
@@ -85,7 +151,7 @@ function RevenueSection() {
           <RevenueCard
             stat="41–44%"
             statLabel="Property-tax cut"
-            note="When the state pays its share, your school district stops asking you to pass referendums to keep the lights on."
+            note="When the state pays its share, your school district stops asking you to pass referendums to keep the lights on. The wealthy pay. You pay less."
             cite={{
               label: "Hong campaign press release",
               href: "https://www.wispolitics.com/2025/rep-madison-introduces-legislation-to-cut-property-taxes-by-44-while-increasing-funding-for-public-schools-and-local-communities/",
@@ -95,7 +161,7 @@ function RevenueSection() {
           <RevenueCard
             stat="1.4×"
             statLabel="Funding weight"
-            note="Low-income and English-language-learner students count for more in the aid formula — money follows kids who need it."
+            note="Low-income and English-learner students count for more in the aid formula. Every kid, every district, every neighborhood — counted, funded, supported."
             cite={{
               label: "AB 1209, sec. 31",
               href: "https://docs.legis.wisconsin.gov/2025/related/proposals/ab1209",
@@ -120,33 +186,37 @@ function RevenueCard({
   cite: { label: string; href: string };
   featured?: boolean;
 }) {
-  const accent = featured
-    ? "var(--color-hong-red)"
-    : "var(--color-hong-navy)";
+  if (featured) {
+    return (
+      <article className="relative bg-[var(--color-hong-yellow)] border-2 border-[var(--color-hong-navy)] p-7 lg:-translate-y-3">
+        <div className="poster-mega tabular text-[clamp(3rem,7vw,4.5rem)] text-[var(--color-hong-navy)]">
+          {stat}
+        </div>
+        <p className="eyebrow mt-2 text-[var(--color-hong-navy)]">{statLabel}</p>
+        <p className="mt-4 type-body-16 text-[var(--color-hong-ink)]">{note}</p>
+        <a
+          href={cite.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-block type-caption text-[var(--color-hong-navy)] hover:underline"
+        >
+          ↗ {cite.label}
+        </a>
+      </article>
+    );
+  }
   return (
-    <article
-      className={`relative bg-[var(--color-hong-cream)] border-2 p-7 ${
-        featured ? "lg:-translate-y-3" : ""
-      }`}
-      style={{ borderColor: accent }}
-    >
-      <div
-        className="display tabular text-[clamp(3rem,7vw,4.5rem)] leading-none"
-        style={{ color: accent }}
-      >
+    <article className="relative bg-[var(--color-hong-cream)] border-2 border-[var(--color-hong-navy)] p-7">
+      <div className="poster-mega tabular text-[clamp(3rem,7vw,4.5rem)] text-[var(--color-hong-navy)]">
         {stat}
       </div>
-      <p className="display text-xs tracking-[0.2em] mt-2" style={{ color: accent }}>
-        {statLabel}
-      </p>
-      <p className="mt-4 text-[var(--color-hong-ink)] leading-relaxed text-[15px]">
-        {note}
-      </p>
+      <p className="eyebrow mt-2 text-[var(--color-hong-navy)]">{statLabel}</p>
+      <p className="mt-4 type-body-16 text-[var(--color-hong-ink)]">{note}</p>
       <a
         href={cite.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-5 inline-block text-xs uppercase tracking-wider text-[var(--color-hong-blue)] hover:underline"
+        className="mt-5 inline-block type-caption text-[var(--color-hong-navy)] hover:underline"
       >
         ↗ {cite.label}
       </a>
@@ -154,26 +224,42 @@ function RevenueCard({
   );
 }
 
-function QuoteSection() {
+function FrancescaSection() {
   return (
     <section className="relative mt-24 lg:mt-36">
-      <div className="max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)] p-10 sm:p-16 lg:p-20 relative overflow-hidden">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16">
+        <div className="bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)] p-8 sm:p-14 lg:p-20 relative overflow-hidden">
           <div
             aria-hidden
-            className="absolute -top-12 -right-8 display text-[20rem] leading-none text-[var(--color-hong-red)]/30 select-none pointer-events-none"
+            className="absolute -top-12 -right-8 poster text-[14rem] sm:text-[20rem] leading-none text-[var(--color-hong-yellow)]/40 select-none pointer-events-none"
           >
             &ldquo;
           </div>
-          <blockquote className="relative max-w-3xl">
-            <p className="display text-[clamp(1.6rem,3.5vw,2.8rem)] leading-tight">
+          <p className="eyebrow text-[var(--color-hong-yellow)] mb-5">
+            ★ Francesca, in her own words ★
+          </p>
+          <blockquote className="relative max-w-4xl space-y-6">
+            <p className="type-h3 leading-tight">
               I&rsquo;m very tired of our state providing subsidies for the
-              wealthiest few and the largest corporations. Tax fairness funds the
-              investments where we need them — and stops working-class people from
-              paying a higher share than the people at the top.
+              wealthiest few and the largest corporations.
             </p>
-            <footer className="mt-8 display text-xs tracking-[0.3em] text-[var(--color-hong-red)]">
-              — Francesca Hong
+            <p className="type-h3 leading-tight">
+              Tax fairness is going to{" "}
+              <span className="text-[var(--color-hong-yellow)]">
+                generate the revenue
+              </span>{" "}
+              we need — and stop the working class from paying a higher
+              percentage than the people at the top.
+            </p>
+            <p className="type-subheading text-[color:rgba(250,246,232,0.85)]">
+              I&rsquo;m a single mom juggling two jobs. From the State Capitol
+              to night shifts behind the bar, I know what working people are up
+              against. That&rsquo;s why we&rsquo;re reclaiming the power of
+              sewer socialism — investing in clean water, public schools, and
+              the things that built Wisconsin in the first place.
+            </p>
+            <footer className="pt-2 eyebrow text-[var(--color-hong-yellow)]">
+              — Rep. Francesca Hong, Wisconsin Assembly District 76
             </footer>
           </blockquote>
         </div>
@@ -185,26 +271,30 @@ function QuoteSection() {
 function CtaSection() {
   return (
     <section className="relative mt-24 lg:mt-32 mb-24">
-      <div className="max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="grid lg:grid-cols-[1.5fr_1fr] gap-10 items-end">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16">
+        <div className="grid lg:grid-cols-[1.4fr_1fr] gap-10 items-end">
           <div>
-            <p className="display text-xs tracking-[0.25em] text-[var(--color-hong-red)] mb-3">
-              Stand with Francesca
+            <p className="eyebrow text-[var(--color-hong-navy)] mb-4">
+              ★ Stand with Francesca ★
             </p>
-            <h2 className="display-xl text-[clamp(2.2rem,5.5vw,4rem)] text-[var(--color-hong-navy)]">
-              We make better
+            <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] uppercase text-[var(--color-hong-navy)]">
+              We make
               <br />
-              possible.
+              <span className="hl-yellow">better possible.</span>
             </h2>
+            <p className="type-body mt-6 max-w-xl text-[var(--color-hong-ink)]">
+              The wealthy already have a movement. It&rsquo;s called every
+              tax break of the last forty years. Time for ours.
+            </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <a
               href="https://secure.actblue.com/donate/website_fh?refcode=taxcalc"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-primary justify-center text-base"
+              className="btn-primary justify-center"
             >
-              Donate to the campaign
+              Chip in to Hong
             </a>
             <a
               href="https://francescahong.com/"
@@ -224,24 +314,25 @@ function CtaSection() {
 function SiteFooter() {
   return (
     <footer className="relative z-10 bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)]">
-      <div className="max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16 py-14">
+      <div className="stripe-tape" aria-hidden />
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 py-14">
         <div className="grid md:grid-cols-3 gap-10">
           <div>
             <div className="flex items-center gap-3">
               <HongMark variant="cream" className="w-10 h-10" />
-              <div className="display tracking-[0.18em] text-sm">
+              <div className="poster text-[15px] tracking-[0.18em] uppercase">
                 Hong for Wisconsin
               </div>
             </div>
-            <p className="display text-[var(--color-hong-red)] text-sm tracking-[0.25em] mt-5">
+            <p className="poster text-[var(--color-hong-yellow)] uppercase mt-5 text-[22px] tracking-[0.05em]">
               We make better possible.
             </p>
           </div>
           <div>
-            <p className="display text-xs tracking-[0.2em] mb-3 text-[color:rgba(246,241,228,0.6)]">
+            <p className="eyebrow text-[color:rgba(250,246,232,0.6)] mb-3">
               Sources
             </p>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 type-small-body">
               <li>
                 <a
                   className="hover:underline"
@@ -269,23 +360,23 @@ function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  ↗ Wisconsin DOR current tax brackets
+                  ↗ Wisconsin DOR — current tax brackets
                 </a>
               </li>
             </ul>
           </div>
           <div>
-            <p className="display text-xs tracking-[0.2em] mb-3 text-[color:rgba(246,241,228,0.6)]">
+            <p className="eyebrow text-[color:rgba(250,246,232,0.6)] mb-3">
               About this calculator
             </p>
-            <p className="text-sm leading-relaxed text-[color:rgba(246,241,228,0.8)]">
+            <p className="type-small-body text-[color:rgba(250,246,232,0.8)] leading-relaxed">
               Estimates use 2026 indexed brackets and AB&nbsp;1209&rsquo;s
-              statutory rates. Results are a guide, not tax advice. Consult a
-              tax professional for your specific situation.
+              statutory rates. A guide, not tax advice — see your situation
+              with a tax professional.
             </p>
           </div>
         </div>
-        <div className="mt-12 pt-6 border-t border-[color:rgba(246,241,228,0.18)] flex flex-col sm:flex-row justify-between gap-4 text-xs text-[color:rgba(246,241,228,0.55)]">
+        <div className="mt-12 pt-6 border-t border-[color:rgba(250,246,232,0.18)] flex flex-col sm:flex-row justify-between gap-4 type-caption text-[color:rgba(250,246,232,0.55)]">
           <p>Paid for by Hong for Wisconsin</p>
           <p>© 2026 Hong for Wisconsin. All rights reserved.</p>
         </div>

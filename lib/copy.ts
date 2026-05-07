@@ -14,14 +14,16 @@ export function verdict(r: RegimeComparison): {
   if (r.unchanged) {
     return {
       big: "$0",
-      small: "Not a dollar more.",
+      small:
+        "Not a damn dollar. Your taxes don't change — every cent comes from the people at the top.",
       tone: "calm",
     };
   }
-  const monthly = r.delta / 12;
   return {
     big: `+${formatBigDollars(r.delta)}`,
-    small: `About ${formatBigDollars(monthly)}/month — paid by you, returned to your community as schools and lower property taxes.`,
+    small: `That's about ${formatBigDollars(
+      r.delta / 12,
+    )} a month — and every penny goes to public schools and lower property taxes for working families.`,
     tone: "alert",
   };
 }

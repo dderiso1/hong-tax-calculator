@@ -45,43 +45,48 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
   const proposedBrackets = bracketsFor(status, 2026, "ab1209");
 
   return (
-    <section className="relative z-10">
+    <section id="calculator" className="relative z-10">
       {/* HERO */}
-      <div className="relative overflow-hidden bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)]">
-        <div className="bandana-stripe" />
-        <div className="relative z-10 max-w-[var(--container-wide)] mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-24 lg:pt-24 lg:pb-32">
-          <p className="display text-[var(--color-hong-red)] text-sm tracking-[0.25em] mb-6">
-            ★ Tax-the-Rich Calculator ★
+      <div className="relative bg-[var(--color-hong-navy)] text-[var(--color-hong-cream)]">
+        <div className="stripe-tape" aria-hidden />
+        <div className="relative z-10 max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 pt-16 pb-28 lg:pt-24 lg:pb-36">
+          <p className="eyebrow text-[var(--color-hong-yellow)] mb-6">
+            ★ The Tax-the-Rich Calculator ★
           </p>
-          <h1 className="display-xl text-4xl sm:text-6xl lg:text-8xl max-w-5xl">
-            Will Hong&rsquo;s plan raise{" "}
-            <em className="not-italic text-[var(--color-hong-red)]">your</em>{" "}
-            taxes?
+          <h1 className="poster-mega text-[clamp(3.4rem,12vw,8.5rem)] text-[var(--color-hong-yellow)] uppercase">
+            Tax the
+            <br />
+            <span className="text-[var(--color-hong-cream)]">rich.</span>
           </h1>
-          <p className="mt-8 text-lg sm:text-xl max-w-2xl text-[color:rgba(246,241,228,0.85)] leading-relaxed">
-            Type your Wisconsin taxable income. See your real number. For{" "}
-            <span className="text-[var(--color-hong-cream)] font-semibold">
-              99% of us
-            </span>
-            , the answer is the same.
+          <p className="type-h3 mt-8 max-w-3xl text-[color:rgba(250,246,232,0.92)]">
+            It&rsquo;s about damn time the wealthiest Wisconsinites paid their
+            share. Type your income — see exactly what Hong&rsquo;s plan does
+            for <em className="not-italic hl-yellow text-[var(--color-hong-navy)]">you.</em>
+          </p>
+          <p className="type-subheading mt-5 max-w-2xl text-[color:rgba(250,246,232,0.7)]">
+            For 99 out of 100 of us, the answer is{" "}
+            <strong className="text-[var(--color-hong-yellow)]">$0</strong>.
+            Every new dollar comes from the people at the top — and goes
+            straight back to your kid&rsquo;s school and your property tax
+            bill.
           </p>
         </div>
       </div>
 
       {/* CALCULATOR CARD */}
-      <div className="max-w-[var(--container-wide)] mx-auto px-4 sm:px-10 lg:px-16 -mt-16 lg:-mt-20 relative z-20">
-        <div className="bg-[var(--color-hong-cream)] border-4 border-[var(--color-hong-navy)] shadow-[6px_6px_0_var(--color-hong-red)] sm:shadow-[12px_12px_0_var(--color-hong-red)] p-5 sm:p-10 lg:p-14">
+      <div className="max-w-[var(--container-wide)] mx-auto px-4 sm:px-10 lg:px-16 -mt-20 lg:-mt-24 relative z-20">
+        <div className="bg-[var(--color-hong-cream)] border-4 border-[var(--color-hong-navy)] shadow-[6px_6px_0_var(--color-hong-yellow)] sm:shadow-[12px_12px_0_var(--color-hong-yellow)] p-5 sm:p-10 lg:p-14">
           <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 lg:gap-16 min-w-0">
             {/* LEFT: INPUT */}
             <div className="min-w-0">
               <label
                 htmlFor="income"
-                className="display text-xs tracking-[0.25em] text-[var(--color-hong-navy)] block mb-3"
+                className="eyebrow text-[var(--color-hong-navy)] block mb-3"
               >
                 Your annual taxable income
               </label>
               <div className="flex items-baseline gap-2 min-w-0">
-                <span className="display text-5xl sm:text-6xl text-[var(--color-hong-navy)]">
+                <span className="poster text-5xl sm:text-6xl text-[var(--color-hong-navy)]">
                   $
                 </span>
                 <input
@@ -112,7 +117,7 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                     <button
                       key={s}
                       type="button"
-                      className="pill text-center"
+                      className="pill"
                       aria-pressed={status === s}
                       onClick={() => setStatus(s)}
                     >
@@ -122,60 +127,53 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                 )}
               </div>
 
-              <details className="mt-8 text-sm text-[var(--color-hong-ink-soft)]">
-                <summary className="cursor-pointer font-semibold uppercase tracking-wider text-xs">
+              <details className="mt-8 type-small-body text-[var(--color-hong-slate)]">
+                <summary className="cursor-pointer eyebrow text-[var(--color-hong-navy)]">
                   What counts as &ldquo;taxable income&rdquo;?
                 </summary>
                 <p className="mt-3 leading-relaxed">
                   This is the number on{" "}
                   <strong>line&nbsp;13 of Wisconsin Form&nbsp;1</strong> &mdash;
-                  your gross income after standard or itemized deductions and
-                  the standard deduction phase-out. Most filers&rsquo; taxable
-                  income is significantly lower than their salary.
+                  your gross income after deductions. Most people&rsquo;s
+                  taxable income is meaningfully lower than their salary.
                 </p>
               </details>
             </div>
 
             {/* RIGHT: RESULT */}
             <div className="relative min-w-0">
-              <p className="display text-xs tracking-[0.25em] text-[var(--color-hong-navy)] mb-3">
+              <p className="eyebrow text-[var(--color-hong-navy)] mb-3">
                 What changes for you
               </p>
               <p
-                className={`display tabular tick text-[clamp(3.5rem,11vw,7rem)] leading-none ${
+                className={`poster-mega tabular tick text-[clamp(3.5rem,11vw,6.5rem)] ${
                   v.tone === "calm"
                     ? "text-[var(--color-hong-navy)]"
-                    : "text-[var(--color-hong-red)]"
+                    : "text-[var(--color-hong-navy)]"
                 }`}
               >
                 {v.big}
               </p>
-              <p className="mt-3 max-w-md text-base sm:text-lg leading-snug text-[var(--color-hong-ink)]">
+              <p className="mt-3 max-w-md type-body-16 text-[var(--color-hong-ink)]">
                 {v.small}
               </p>
 
-              <hr className="my-6 border-0 rule-navy" />
+              <hr className="my-6 border-0 border-t-2 border-[var(--color-hong-navy)]/30" />
 
               <dl className="grid grid-cols-2 gap-4 sm:gap-8 tabular">
                 <div>
-                  <dt className="text-[10px] sm:text-xs uppercase tracking-[0.18em] text-[var(--color-hong-ink-soft)]">
+                  <dt className="eyebrow text-[10px] sm:text-xs text-[var(--color-hong-slate)]">
                     Under current law
                   </dt>
-                  <dd className="display text-2xl sm:text-3xl text-[var(--color-hong-navy)] mt-1">
+                  <dd className="poster text-2xl sm:text-3xl text-[var(--color-hong-navy)] mt-1">
                     {formatUSD(result.current)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[10px] sm:text-xs uppercase tracking-[0.18em] text-[var(--color-hong-ink-soft)]">
+                  <dt className="eyebrow text-[10px] sm:text-xs text-[var(--color-hong-slate)]">
                     Under Hong&rsquo;s plan
                   </dt>
-                  <dd
-                    className={`display text-2xl sm:text-3xl mt-1 ${
-                      v.tone === "calm"
-                        ? "text-[var(--color-hong-navy)]"
-                        : "text-[var(--color-hong-red)]"
-                    }`}
-                  >
+                  <dd className="poster text-2xl sm:text-3xl mt-1 text-[var(--color-hong-navy)]">
                     {formatUSD(result.proposed)}
                   </dd>
                 </div>
@@ -185,14 +183,14 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
 
           {/* BRACKETS COMPARISON */}
           <div className="mt-12 pt-10 border-t-2 border-[var(--color-hong-navy)]/20">
-            <h2 className="display text-2xl sm:text-3xl text-[var(--color-hong-navy)] mb-2">
-              See exactly what changes.
+            <h2 className="type-h3 text-[var(--color-hong-navy)] mb-2">
+              Here&rsquo;s the deal.
             </h2>
-            <p className="text-[var(--color-hong-ink-soft)] mb-8 max-w-2xl">
-              Brackets 1 through 3 cover the income most working Wisconsinites
-              earn. <strong>AB&nbsp;1209 leaves them untouched.</strong> Only
-              income above $323,290 (single) or $431,060 (married-joint) sees a
-              new rate.
+            <p className="type-body-16 text-[var(--color-hong-slate)] mb-8 max-w-2xl">
+              Brackets&nbsp;1&ndash;3 cover what working Wisconsinites
+              actually earn. <strong>AB&nbsp;1209 doesn&rsquo;t touch them.</strong>{" "}
+              Only income above $323,290 (single) or $431,060 (married joint)
+              starts to pay closer to a fair share.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 sm:gap-10 min-w-0">
@@ -203,10 +201,10 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                 accent="navy"
               />
               <BracketBlock
-                title="AB 1209 (Hong's plan)"
+                title="AB 1209 — Hong's plan"
                 rows={proposedBrackets}
                 income={income}
-                accent="red"
+                accent="yellow"
               />
             </div>
           </div>
@@ -225,27 +223,29 @@ function BracketBlock({
   title: string;
   rows: readonly { from: number; rate: number }[];
   income: number;
-  accent: "navy" | "red";
+  accent: "navy" | "yellow";
 }) {
   const accentColor =
-    accent === "red" ? "var(--color-hong-red)" : "var(--color-hong-navy)";
+    accent === "yellow" ? "var(--color-hong-navy)" : "var(--color-hong-navy)";
+  const highlightBg =
+    accent === "yellow"
+      ? "var(--color-hong-yellow)"
+      : "rgba(30, 41, 87, 0.08)";
   return (
     <div>
       <h3
-        className="display text-sm tracking-[0.2em] mb-3 pb-2 border-b-2"
+        className="eyebrow mb-3 pb-2 border-b-2"
         style={{ color: accentColor, borderColor: accentColor }}
       >
         {title}
       </h3>
-      <table className="w-full text-sm tabular">
-        <thead className="text-[var(--color-hong-ink-soft)]">
+      <table className="w-full type-small-body tabular">
+        <thead>
           <tr className="border-b border-[var(--color-hong-navy)]/20">
-            <th className="text-left font-semibold uppercase tracking-wider text-[10px] py-2">
+            <th className="text-left eyebrow text-[10px] py-2">
               Income above
             </th>
-            <th className="text-right font-semibold uppercase tracking-wider text-[10px] py-2">
-              Rate
-            </th>
+            <th className="text-right eyebrow text-[10px] py-2">Rate</th>
           </tr>
         </thead>
         <tbody>
@@ -255,11 +255,12 @@ function BracketBlock({
             return (
               <tr
                 key={`${b.from}-${b.rate}`}
-                className={`border-b border-[var(--color-hong-navy)]/10 ${
+                className="border-b border-[var(--color-hong-navy)]/10"
+                style={
                   inThisBracket
-                    ? "bg-[var(--color-hong-navy)]/5"
-                    : ""
-                }`}
+                    ? { background: highlightBg }
+                    : undefined
+                }
               >
                 <td className="py-2.5">
                   {b.from === 0 ? (
@@ -269,10 +270,11 @@ function BracketBlock({
                   )}
                   {inThisBracket && (
                     <span
-                      className="ml-2 text-[10px] px-1.5 py-0.5 align-middle"
+                      className="ml-2 text-[10px] px-1.5 py-0.5 align-middle font-bold"
                       style={{
-                        background: accentColor,
-                        color: "var(--color-hong-cream)",
+                        background: "var(--color-hong-navy)",
+                        color: "var(--color-hong-yellow)",
+                        letterSpacing: "0.1em",
                       }}
                     >
                       YOU
@@ -280,7 +282,7 @@ function BracketBlock({
                   )}
                 </td>
                 <td
-                  className="py-2.5 text-right display"
+                  className="py-2.5 text-right poster"
                   style={{ color: accentColor }}
                 >
                   {formatPercent(b.rate)}

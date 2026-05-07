@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Open_Sans } from "next/font/google";
+import { Open_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const display = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 const body = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://francescahong.com"),
-  title: "Will Hong's plan raise your taxes? | Tax the Rich Calculator",
+  metadataBase: new URL("https://hong-tax-calculator.vercel.app"),
+  title: "Tax the Rich — Francesca Hong for Wisconsin",
   description:
-    "Type your income. See your real number. Francesca Hong's plan asks the wealthiest Wisconsinites to pay their fair share — and uses every dollar to fund our schools.",
+    "Type your income. See your number. For 99 out of 100 of us, Francesca Hong's plan changes nothing. For the wealthiest, it's about damn time.",
   openGraph: {
-    title: "Will Hong's plan raise your taxes?",
+    title: "Tax the Rich — Francesca Hong for Wisconsin",
     description:
-      "For 99% of Wisconsinites, the answer is $0. See your real number.",
+      "It's about damn time the wealthiest Wisconsinites paid their share. See what Hong's plan does for you.",
     type: "website",
   },
 };
