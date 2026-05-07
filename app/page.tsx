@@ -102,7 +102,8 @@ function UnequalSection() {
             Francesca&rsquo;s plan ends that.
           </strong>{" "}
           A single new top tax bracket on income above $1 million. A modest bump
-          on income above $323k. <strong>That&rsquo;s it.</strong> Brackets 1, 2,
+          on income above $323k. <strong>That&rsquo;s it.</strong>{" "}
+          Brackets 1, 2,
           and 3 — where almost every Wisconsinite lives — don&rsquo;t move a
           basis point.
         </p>
