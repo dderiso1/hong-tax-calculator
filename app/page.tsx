@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Calculator } from "@/components/Calculator";
 import { HongMark } from "@/components/HongMark";
 
@@ -19,20 +20,24 @@ export default function Home() {
 
 function SiteHeader() {
   return (
-    <header className="relative z-30 bg-[var(--color-hong-paper)] border-b-2 border-[var(--color-hong-navy)]">
-      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-3">
-          <HongMark className="w-9 h-9" />
-          <span className="poster text-[15px] tracking-[0.18em] uppercase text-[var(--color-hong-navy)]">
-            Hong for Wisconsin
-          </span>
+    <header className="relative z-30 bg-[var(--color-hong-navy)]">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-20 flex items-center justify-between gap-4">
+        <a href="https://francescahong.com/" target="_blank" rel="noopener noreferrer" className="flex items-center shrink-0">
+          <Image
+            src="/hong-wordmark.webp"
+            alt="Francesca Hong for Governor"
+            width={2000}
+            height={1070}
+            priority
+            className="h-12 sm:h-14 w-auto"
+          />
         </a>
-        <nav className="flex items-center gap-2 sm:gap-3">
+        <nav className="flex items-center gap-2 sm:gap-3 shrink-0">
           <a
             href="https://docs.legis.wisconsin.gov/2025/related/proposals/ab1209"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary hidden sm:inline-flex"
+            className="btn-secondary btn-on-navy hidden sm:inline-flex"
           >
             Read AB&nbsp;1209
           </a>
@@ -58,9 +63,10 @@ function UnequalSection() {
           ★ The system is rigged ★
         </p>
         <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] text-[var(--color-hong-navy)] uppercase max-w-5xl">
-          Working people pay
+          Working people
           <br />
-          their fair share.{" "}
+          pay their fair share.
+          <br />
           <span className="hl-yellow">The wealthy don&rsquo;t.</span>
         </h2>
         <p className="type-body mt-8 max-w-3xl text-[var(--color-hong-ink)]">
@@ -134,7 +140,8 @@ function RevenueSection() {
         <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] text-[var(--color-hong-navy)] uppercase max-w-5xl">
           Money the wealthy
           <br />
-          were keeping.{" "}
+          were keeping.
+          <br />
           <span className="hl-yellow">Now it goes to your kid&rsquo;s school.</span>
         </h2>
 
@@ -280,7 +287,7 @@ function CtaSection() {
             <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] uppercase text-[var(--color-hong-navy)]">
               We make
               <br />
-              <span className="hl-yellow">better possible.</span>
+              <span className="hl-yellow-block">better possible.</span>
             </h2>
             <p className="type-body mt-6 max-w-xl text-[var(--color-hong-ink)]">
               The wealthy already have a movement. It&rsquo;s called every
