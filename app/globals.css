@@ -179,14 +179,14 @@ body::before {
 .poster {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
 }
 .poster-mega {
   font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
 }
 
 /* === COMPONENTS — wrapped in @layer so Tailwind utilities (.hidden, etc) win === */
@@ -326,21 +326,21 @@ body::before {
   width: 100%;
 }
 
-/* Marker highlight on key words — kept tight so it accents, not dominates */
+/* Marker highlight on key words — sits inside the line box so it never
+   overlaps the line above. Use as <span class="hl-yellow"> on phrases
+   that already sit on their own line (after a <br>). */
 .hl-yellow {
   background: var(--color-hong-yellow);
-  padding: 0.02em 0.18em;
+  padding: 0 0.18em;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-/* Inline-block version: never wraps mid-phrase, so the highlight stays one rectangle */
 .hl-yellow-block {
   display: inline-block;
   background: var(--color-hong-yellow);
-  padding: 0.04em 0.22em 0.06em;
-  line-height: 1.05;
+  padding: 0 0.22em;
+  line-height: inherit;
   white-space: nowrap;
-  margin-top: 0.12em;
 }
 } /* end @layer components */
 
