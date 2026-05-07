@@ -180,8 +180,8 @@ function RevenueSection() {
             statLabel="Property-tax cut"
             note="When the state pays its share, your school district stops asking you to pass referendums to keep the lights on. The wealthy pay. You pay less."
             cite={{
-              label: "Hong campaign press release",
-              href: "https://www.wispolitics.com/2025/rep-madison-introduces-legislation-to-cut-property-taxes-by-44-while-increasing-funding-for-public-schools-and-local-communities/",
+              label: "Hong on property taxes",
+              href: "https://www.facebook.com/FrancescaHongWI/posts/property-taxes-in-wisconsin-are-too-damn-high-full-stopwe-ask-more-of-homeowners/1253221483283857/",
             }}
             featured
           />
@@ -374,11 +374,11 @@ function SiteFooter() {
               <li>
                 <a
                   className="hover:underline"
-                  href="https://www.wispolitics.com/2025/rep-madison-introduces-legislation-to-cut-property-taxes-by-44-while-increasing-funding-for-public-schools-and-local-communities/"
+                  href="https://francescahong.com/policy/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  ↗ Property-tax-cut press release
+                  ↗ Hong&rsquo;s policy platform
                 </a>
               </li>
               <li>
