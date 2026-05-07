@@ -41,7 +41,7 @@ export default async function Home({
 function SiteHeader() {
   return (
     <header className="relative z-30 bg-[var(--color-hong-navy)]">
-      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-20 flex items-center justify-between gap-4">
+      <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-24 sm:h-28 flex items-center justify-between gap-4">
         <a href="https://francescahong.com/" target="_blank" rel="noopener noreferrer" className="flex items-center shrink-0">
           <Image
             src="/hong-wordmark.webp"
@@ -49,7 +49,7 @@ function SiteHeader() {
             width={2000}
             height={1070}
             priority
-            className="h-12 sm:h-14 w-auto"
+            className="h-16 sm:h-20 w-auto"
           />
         </a>
         <nav className="flex items-center gap-2 sm:gap-3 shrink-0">
@@ -350,9 +350,9 @@ function SiteFooter() {
               alt="Francesca Hong for Governor"
               width={2000}
               height={1070}
-              className="h-14 w-auto"
+              className="h-24 sm:h-28 w-auto"
             />
-            <p className="poster text-[var(--color-hong-yellow)] uppercase mt-6 text-[22px] tracking-[0.05em]">
+            <p className="poster text-[var(--color-hong-yellow)] uppercase mt-7 text-[22px] tracking-[0.05em]">
               We make better possible.
             </p>
           </div>

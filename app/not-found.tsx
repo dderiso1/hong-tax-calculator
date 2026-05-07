@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <>
       <header className="relative z-30 bg-[var(--color-hong-navy)]">
-        <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-20 flex items-center">
+        <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 h-24 sm:h-28 flex items-center">
           <a
             href="/"
             className="flex items-center shrink-0"
@@ -16,7 +16,7 @@ export default function NotFound() {
               width={2000}
               height={1070}
               priority
-              className="h-12 sm:h-14 w-auto"
+              className="h-16 sm:h-20 w-auto"
             />
           </a>
         </div>
