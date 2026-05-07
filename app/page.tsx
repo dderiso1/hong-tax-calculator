@@ -1,13 +1,33 @@
 import Image from "next/image";
 import { Calculator } from "@/components/Calculator";
-import { HongMark } from "@/components/HongMark";
+import type { FilingStatus } from "@/lib/bill";
+import { parseIncomeInput } from "@/lib/format";
 
-export default function Home() {
+const VALID_STATUSES: FilingStatus[] = ["single", "mfj", "mfs"];
+
+type SearchParams = Promise<{ income?: string; status?: string }>;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const parsedIncome = parseIncomeInput(sp.income ?? "");
+  const initialIncome = parsedIncome > 0 ? parsedIncome : 75_000;
+  const initialStatus: FilingStatus =
+    sp.status && (VALID_STATUSES as string[]).includes(sp.status)
+      ? (sp.status as FilingStatus)
+      : "single";
+
   return (
     <>
       <SiteHeader />
       <main>
-        <Calculator />
+        <Calculator
+          defaultIncome={initialIncome}
+          defaultStatus={initialStatus}
+        />
         <UnequalSection />
         <RevenueSection />
         <FrancescaSection />
@@ -287,7 +307,7 @@ function CtaSection() {
             <h2 className="poster text-[clamp(2.6rem,6.5vw,4.5rem)] uppercase text-[var(--color-hong-navy)]">
               We make
               <br />
-              <span className="hl-yellow-block">better possible.</span>
+              <span className="hl-yellow">better possible.</span>
             </h2>
             <p className="type-body mt-6 max-w-xl text-[var(--color-hong-ink)]">
               The wealthy already have a movement. It&rsquo;s called every
@@ -325,13 +345,14 @@ function SiteFooter() {
       <div className="max-w-[var(--container-wide)] mx-auto px-5 sm:px-10 lg:px-16 py-14">
         <div className="grid md:grid-cols-3 gap-10">
           <div>
-            <div className="flex items-center gap-3">
-              <HongMark variant="cream" className="w-10 h-10" />
-              <div className="poster text-[15px] tracking-[0.18em] uppercase">
-                Hong for Wisconsin
-              </div>
-            </div>
-            <p className="poster text-[var(--color-hong-yellow)] uppercase mt-5 text-[22px] tracking-[0.05em]">
+            <Image
+              src="/hong-wordmark.webp"
+              alt="Francesca Hong for Governor"
+              width={2000}
+              height={1070}
+              className="h-14 w-auto"
+            />
+            <p className="poster text-[var(--color-hong-yellow)] uppercase mt-6 text-[22px] tracking-[0.05em]">
               We make better possible.
             </p>
           </div>

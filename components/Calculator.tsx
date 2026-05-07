@@ -22,67 +22,76 @@ import {
 
 type Props = {
   defaultIncome?: number;
+  defaultStatus?: FilingStatus;
 };
 
 const VALID_STATUSES: FilingStatus[] = ["single", "mfj", "mfs"];
 const STORAGE_KEY = "hong-calc:v1";
 
-export function Calculator({ defaultIncome = 75_000 }: Props) {
+export function Calculator({
+  defaultIncome = 75_000,
+  defaultStatus = "single",
+}: Props) {
+  // SSR already resolved URL params, so initial state is already correct.
   const [income, setIncome] = useState<number>(defaultIncome);
   const [raw, setRaw] = useState<string>(
     new Intl.NumberFormat("en-US").format(defaultIncome),
   );
-  const [status, setStatus] = useState<FilingStatus>("single");
+  const [status, setStatus] = useState<FilingStatus>(defaultStatus);
   const [toast, setToast] = useState<string | null>(null);
 
-  // URL params win; localStorage is a fallback for return visitors
+  // On first mount, fall back to localStorage *only* if no URL params overrode.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    let nextIncome: number | null = null;
-    let nextStatus: FilingStatus | null = null;
-    const i = parseIncomeInput(params.get("income") ?? "");
-    if (i > 0) nextIncome = i;
-    const s = params.get("status");
-    if (s && (VALID_STATUSES as string[]).includes(s)) {
-      nextStatus = s as FilingStatus;
-    }
-    if (nextIncome === null || nextStatus === null) {
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
-        if (saved && typeof saved === "object") {
-          if (
-            nextIncome === null &&
-            typeof saved.income === "number" &&
-            saved.income > 0
-          ) {
-            nextIncome = saved.income;
-          }
-          if (
-            nextStatus === null &&
-            typeof saved.status === "string" &&
-            (VALID_STATUSES as string[]).includes(saved.status)
-          ) {
-            nextStatus = saved.status as FilingStatus;
-          }
-        }
-      } catch {
-        /* ignore */
-      }
-    }
-    if (nextIncome !== null) {
-      setIncome(nextIncome);
-      setRaw(new Intl.NumberFormat("en-US").format(nextIncome));
-    }
-    if (nextStatus !== null) setStatus(nextStatus);
-  }, []);
-
-  // Persist on change
-  useEffect(() => {
+    const hadIncome = params.get("income") !== null;
+    const hadStatus = params.get("status") !== null;
+    if (hadIncome && hadStatus) return; // SSR already had everything
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ income, status }));
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+      if (!saved || typeof saved !== "object") return;
+      if (!hadIncome && typeof saved.income === "number" && saved.income > 0) {
+        setIncome(saved.income);
+        setRaw(new Intl.NumberFormat("en-US").format(saved.income));
+      }
+      if (
+        !hadStatus &&
+        typeof saved.status === "string" &&
+        (VALID_STATUSES as string[]).includes(saved.status)
+      ) {
+        setStatus(saved.status as FilingStatus);
+      }
     } catch {
       /* ignore */
     }
+  }, []);
+
+  // Debounced persist + URL sync. One timer drives both writes so that rapid
+  // keystrokes coalesce into a single write at idle.
+  const writeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (writeTimer.current !== null) clearTimeout(writeTimer.current);
+    writeTimer.current = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ income, status }));
+      } catch {
+        /* ignore */
+      }
+      try {
+        const url = new URL(window.location.href);
+        if (income > 0) {
+          url.searchParams.set("income", String(income));
+        } else {
+          url.searchParams.delete("income");
+        }
+        url.searchParams.set("status", status);
+        window.history.replaceState(null, "", url.toString());
+      } catch {
+        /* ignore */
+      }
+    }, 250);
+    return () => {
+      if (writeTimer.current !== null) clearTimeout(writeTimer.current);
+    };
   }, [income, status]);
 
   const result = useMemo(
@@ -173,7 +182,7 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
               >
                 Your annual taxable income
               </label>
-              <div className="flex items-baseline gap-2 min-w-0">
+              <div className="flex items-baseline gap-2 min-w-0 relative">
                 <span className="poster text-5xl sm:text-6xl text-[var(--color-hong-navy)]">
                   $
                 </span>
@@ -181,22 +190,41 @@ export function Calculator({ defaultIncome = 75_000 }: Props) {
                   id="income"
                   inputMode="numeric"
                   autoComplete="off"
-                  className="income-input min-w-0 flex-1"
+                  className="income-input min-w-0 flex-1 pr-10"
                   value={raw}
                   placeholder="75,000"
                   onChange={(e) => {
-                    const parsed = parseIncomeInput(e.target.value);
-                    setIncome(parsed);
-                    setRaw(
-                      e.target.value === ""
-                        ? ""
-                        : new Intl.NumberFormat("en-US").format(parsed),
-                    );
+                    // Preserve the raw text so users can type "1.5m" mid-stream
+                    // without us clobbering the suffix on every keystroke.
+                    const text = e.target.value;
+                    setRaw(text);
+                    setIncome(parseIncomeInput(text));
                   }}
                   onBlur={() => {
-                    if (raw === "") setRaw("0");
+                    // On blur, normalize the display to the formatted number
+                    // (so "1.5m" renders as "1,500,000").
+                    if (income > 0) {
+                      setRaw(new Intl.NumberFormat("en-US").format(income));
+                    } else {
+                      setRaw("");
+                    }
                   }}
                 />
+                {raw !== "" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIncome(0);
+                      setRaw("");
+                    }}
+                    aria-label="Clear income"
+                    className="absolute right-1 bottom-3 sm:bottom-4 w-7 h-7 flex items-center justify-center rounded-full text-[var(--color-hong-slate)] hover:bg-[var(--color-hong-navy)]/10 hover:text-[var(--color-hong-navy)] transition-colors"
+                  >
+                    <span aria-hidden className="text-lg leading-none">
+                      ×
+                    </span>
+                  </button>
+                )}
               </div>
 
               {/* Filing status pills */}
